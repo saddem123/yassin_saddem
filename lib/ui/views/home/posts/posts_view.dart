@@ -6,8 +6,22 @@ import 'package:yassin_saddem/ui/views/home/posts/posts_viewmodel.dart';
 import 'package:yassin_saddem/ui/widgets/post_card.dart';
 import 'package:yassin_saddem/utils/size_config.dart';
 
-class PostsView extends StatelessWidget {
+class PostsView extends StatefulWidget {
   const PostsView({Key? key}) : super(key: key);
+
+  @override
+  State<PostsView> createState() => _PostsViewState();
+}
+
+class _PostsViewState extends State<PostsView> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _scrollController.addListener(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,18 +75,17 @@ class PostsView extends StatelessWidget {
             ),
           ),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Expanded(
-                child: ListView.builder(
-                    padding: const EdgeInsets.only(top: 20),
-                    itemCount: model.allPosts.length,
-                    itemBuilder: (BuildContext context, index) {
-                      return PostCard(post: model.allPosts[index]);
-                    }))
-          ],
+        body: RefreshIndicator(
+          onRefresh: () async {
+            // fetch list again if there is any update
+          },
+          child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.only(top: 20),
+              itemCount: model.allPosts.length,
+              itemBuilder: (BuildContext context, index) {
+                return PostCard(post: model.allPosts[index]);
+              }),
         ),
       ),
       viewModelBuilder: () => PostViewModel(),
